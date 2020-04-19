@@ -7,4 +7,7 @@ if (process.env.NODE_ENV === 'dev') {
     urlDB = 'mongodb://localhost:27017/cafe';
 }
 
+process.env.JWT_EXP = 60 * 60 * 24 * 30;
+process.env.SEED = process.env.SEED || 'secret-de-desarrollo';
+
 process.env.URL_DB = urlDB;

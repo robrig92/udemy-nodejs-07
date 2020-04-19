@@ -1,10 +1,15 @@
 const express = require('express');
-const Usuario = require('../models/usuario');
 const bcrypt = require('bcrypt');
+const Usuario = require('../models/usuario');
 const _ = require('underscore');
+const {
+    checkToken,
+    checkAdmin
+} = require('../middlewares/autenticacion');
+
 const app = express();
 
-app.get('/usuario', (req, res) => {
+app.get('/usuario', checkToken, (req, res) => {
     let desde = req.query.desde || 0;
     let limite = req.query.limite || 5;
 
@@ -41,7 +46,7 @@ app.get('/usuario', (req, res) => {
         });
 });
 
-app.post('/usuario', (req, res) => {
+app.post('/usuario', [checkToken, checkAdmin], (req, res) => {
     let body = req.body;
 
     let usuario = new Usuario({
@@ -66,7 +71,7 @@ app.post('/usuario', (req, res) => {
     });
 });
 
-app.put('/usuario/:id', (req, res) => {
+app.put('/usuario/:id', [checkToken, checkAdmin], (req, res) => {
     let id = req.params.id;
     let body = req.body;
 
@@ -100,7 +105,7 @@ app.put('/usuario/:id', (req, res) => {
     });
 });
 
-app.delete('/usuario/:id', (req, res) => {
+app.delete('/usuario/:id', [checkToken, checkAdmin], (req, res) => {
     let id = req.params.id;
 
     Usuario.findByIdAndUpdate(id, { estado: false }, { new: true }, (err, usuario) => {
