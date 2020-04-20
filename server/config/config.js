@@ -11,3 +11,5 @@ process.env.JWT_EXP = 60 * 60 * 24 * 30;
 process.env.SEED = process.env.SEED || 'secret-de-desarrollo';
 
 process.env.URL_DB = urlDB;
+
+process.env.CLIENT_ID = process.env.CLIENT_ID || '966447409801-56kkeb43t5sd5vj2rjladu8sqgddfmad.apps.googleusercontent.com';
