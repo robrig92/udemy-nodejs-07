@@ -9,9 +9,10 @@ let categoriaSchema = new Schema({
         unique: true,
         required: [true, 'La descripción es necesaria']
     },
-    usuario_id: {
+    usuario: {
         type: Schema.Types.ObjectId,
-        requird: [true, 'El usuario es necesario']
+        required: [true, 'El usuario es necesario'],
+        ref: 'Usuario'
     }
 });
 

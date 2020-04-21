@@ -5,19 +5,22 @@ let Categoria = require('../models/categoria');
 const app = express();
 
 app.get('/categoria', checkToken, (req, res) => {
-    Categoria.find({}, (err, categorias) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                err
-            });
-        }
+    Categoria.find({})
+        .sort('descripcion')
+        .populate('usuario', 'nombre email')
+        .exec((err, categorias) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
 
-        res.json({
-            ok: true,
-            categorias
-        })
-    });
+            res.json({
+                ok: true,
+                categorias
+            })
+        });
 });
 
 app.post('/categoria', checkToken, (req, res) => {
@@ -25,7 +28,7 @@ app.post('/categoria', checkToken, (req, res) => {
     let usuario = req.usuario;
     let categoria = new Categoria({
         descripcion: body.descripcion,
-        usuario_id: usuario._id
+        usuario: usuario._id
     });
 
     categoria.save(categoria, (err, storedCategoria) => {
@@ -46,26 +49,28 @@ app.post('/categoria', checkToken, (req, res) => {
 app.get('/categoria/:id', checkToken, (req, res) => {
     let id = req.params.id;
 
-    Categoria.findById(id, (err, categoria) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                err
-            });
-        }
+    Categoria.findById(id)
+        .populate('usuario', 'nombre email')
+        .exec((err, categoria) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
 
-        if (!categoria) {
-            return res.status(400).json({
-                ok: false,
-                message: 'Categoría no encontrada'
-            });
-        }
+            if (!categoria) {
+                return res.status(400).json({
+                    ok: false,
+                    message: 'Categoría no encontrada'
+                });
+            }
 
-        res.json({
-            ok: true,
-            categoria
-        })
-    })
+            res.json({
+                ok: true,
+                categoria
+            })
+        });
 });
 
 app.put('/categoria/:id', checkToken, (req, res) => {
