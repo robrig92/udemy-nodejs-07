@@ -15,7 +15,7 @@ const checkToken = (req, res, next) => {
 
         req.usuario = decoded.usuario;
         next();
-    })
+    });
 }
 
 const checkAdmin = (req, res, next) => {
@@ -31,7 +31,26 @@ const checkAdmin = (req, res, next) => {
     next();
 }
 
+const checkTokenImage = (req, res, next) => {
+    let token = req.query.token;
+
+    jwt.verify(token, process.env.SEED, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({
+                ok: false,
+                err: {
+                    message: 'Token no válido'
+                }
+            })
+        }
+
+        req.usuario = decoded.usuario;
+        next();
+    });
+}
+
 module.exports = {
     checkToken,
-    checkAdmin
+    checkAdmin,
+    checkTokenImage
 }
